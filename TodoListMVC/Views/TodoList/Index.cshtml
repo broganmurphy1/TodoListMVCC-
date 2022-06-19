@@ -1,0 +1,30 @@
+﻿@model TodoListMVC.Models.ViewModels.TodoListItemsViewModel
+
+@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+@* for each to do item: *@
+
+<section class="todolist_add-item">
+    <p>Add new item:</p>
+    <input type="text" />
+</section>
+<section class="todlist-item-list">
+    @foreach (var todo in Model.Todos)
+    {
+        <div class="todolist-item">
+            <details>
+                <summary>
+                    <div class="todolist-item__info">
+                        <input type="checkbox" />
+                        <h2 class="todolist-item__title m-0">@todo.ItemName</h2>
+                    </div>
+                </summary>
+                <ul class="mt-3">
+                    <li>Subtask 1</li>
+                </ul>
+            </details>
+        </div>
+    }
+</section>
