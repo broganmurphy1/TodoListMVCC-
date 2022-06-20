@@ -15,5 +15,6 @@ namespace TodoListMVC.Models
         }
         public string SubTaskId { get; set; }
         public string SubTaskName { get; set; }
+        public bool IsSubTaskComplete { get; set; }
     }
 }

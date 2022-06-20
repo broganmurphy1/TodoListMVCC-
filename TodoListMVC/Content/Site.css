@@ -1,66 +1,78 @@
-﻿/*CSS Reset - Start*/
-
-/*html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-}*/
-/* HTML5 display-role reset for older browsers */
-/*article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-    display: block;
-}
-body {
-    line-height: 1;
-}
-ol, ul {
-    list-style: none;
-}
-blockquote, q {
-    quotes: none;
-}
-    blockquote:before, blockquote:after,
-    q:before, q:after {
-        content: '';
-        content: none;
-    }
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}*/
-
-/*CSS Reset - End*/
-
-:root {
+﻿:root {
     --background-color-body: #FCF8E8;
     --main-background-colour: #f8f9fa;
     --main-background-border-colour: #cbd3da;
-    --input-accent-colour: #3AB0FF;
+    --accent-colour: #3AB0FF;
+    --input-border-colour: #757575;
+    --input-label-colour: #999;
+    --input-label-colour--focus: #2e90d1;
+    --font-family: 'Nunito', sans-serif;
     /*colours, font-sizes/families/weights*/
 }
 
-body{
+body {
     background-color: var(--background-color-body);
+    font-family: var(--font-family);
 }
 
-input{
-    accent-color: var(--input-accent-colour);
+input {
+    accent-color: var(--accent-colour);
 }
+
+li {
+    list-style: none
+}
+
+/*utils - start*/
+
+.text-decoration--line-through{
+    text-decoration: line-through;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+/*utils - end*/
+
+
+.todolist__form-label-group {
+    position: relative;
+}
+
+.todolist_field {
+    font-size: 14px;
+    display: block;
+    min-width: 75%;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--input-border-colour);
+}
+
+    .todolist_field:focus {
+        outline: none;
+        border-bottom: 2px solid var(--accent-colour);
+    }
+
+.todolist_label {
+    color: var(--input-label-colour);
+    font-size: 14px;
+    font-weight: normal;
+    position: absolute;
+    pointer-events: none;
+    top: 5px;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
+.todolist_field:focus ~ .todolist_label, .todolist_field:not(:placeholder-shown) ~ .todolist_label {
+    top: -18px;
+    font-size: 14px;
+    color: var(--input-label-colour--focus);
+}
+
 
 .todolist-container {
     display: grid;
@@ -71,7 +83,20 @@ input{
     padding: 2rem;
 }
 
-.todolist-item{
+.todolist_add-item{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.todolist-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.todolist-item {
     display: flex;
     justify-content: space-between;
     padding: 2rem;
@@ -82,9 +107,47 @@ input{
     border: 1px solid var(--main-background-border-colour);
 }
 
-.todolist-item__info{
+.todolist-item__info {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 1rem;
+}
+
+.todolist-item__label{
+    font-weight: 400;
+}
+
+.todolist-item__subtasks {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    margin: 1rem;
+}
+
+.todolist-item__subtask {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.todolist_add-button {
+    background-color: var(--accent-colour);
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+}
+
+@media (max-width: 768px) {
+    .todolist-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .todolist_field{
+        min-width: 100%;
+    }
 }
