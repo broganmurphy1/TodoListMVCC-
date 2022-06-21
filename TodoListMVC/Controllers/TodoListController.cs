@@ -25,9 +25,17 @@ namespace TodoListMVC.Controllers
 
         public ActionResult AddNewTodo()
         {
-            string todoName = Request["todoName"];
+            string todoName = Request["todoName"]; //would need some sort of mechanism/validation here against vulnerabilities
 
-            return Json(new { success = true, todo = todoName});
+            TodoItem newTodo = new TodoItem(todoName, Guid.NewGuid().ToString());
+
+            TodoItem addedTodo = _todoListRepository.AddNewTodo(newTodo);
+            if (addedTodo == null)
+            {
+                return Json(new { success = false });
+            }
+
+            return Json(new { success = true, todoName = addedTodo.ItemName, itemId = addedTodo.ItemId });
         }
     }
 }

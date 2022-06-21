@@ -17,7 +17,7 @@
     {
         <div data-todo-id="@todo.ItemId" class="todolist-item">
             <details>
-                <summary>
+                <summary class="d-flex">
                     <div class="todolist-item__info">
                         <h2 class="todolist-item__title m-0 @(todo.IsComplete ? "text-decoration--line-through" : "")">@todo.ItemName</h2>
                     </div>
@@ -25,11 +25,12 @@
                 <div class="todolist-item__subtasks">
                     @foreach (var subtask in todo.Subtasks)
                     {
-                        string subtaskId = subtask.SubTaskId;
-                        <div data-subtask-id="@subtaskId" class="todolist-item__subtask">
-                            <input data-field-action="add-new-subtask" id="subtask-@subtaskId" type="checkbox" class="todolist-item__checkbox m-0" @(subtask.IsSubTaskComplete ? "checked" : "")/>
-                            <label for="subtask-@subtaskId" class="todolist-item__label m-0 cursor-pointer">@subtask.SubTaskName</label>
-                        </div>
+                    <div data-subtask-id="@subtask.SubTaskId" class="todolist-item__subtask">
+                        <input data-field-action="add-new-subtask" type="checkbox" class="todolist-item__checkbox m-0" @(subtask.IsSubTaskComplete ? "checked" : "") />
+                        <p class="todolist-item__label m-0 cursor-pointer">@subtask.SubTaskName</p>
+                        <i data-action="edit-todo-subtask" class="fa-solid fa-pen cursor-pointer mr-auto"></i>
+                        <i data-action="edit-todo-subtask-submit" class="fa-solid fa-check" hidden></i>
+                    </div>
                     }
                     <div class="d-flex flex-row">
                         <div class="todolist__form-label-group mr-4">
@@ -40,6 +41,8 @@
                     </div>
                 </div>
             </details>
+            <i data-action="edit-todo" class="fa-solid fa-pen cursor-pointer mr-auto"></i>
+            <i data-action="edit-todo-submit" class="fa-solid fa-check" hidden></i>
         </div>
     }
 </section>

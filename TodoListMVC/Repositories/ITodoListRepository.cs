@@ -10,5 +10,6 @@ namespace TodoListMVC.Repositories
     interface ITodoListRepository
     {
         List<TodoItem> GetAllTodoItems();
+        TodoItem AddNewTodo(TodoItem todoItem);
     }
 }
