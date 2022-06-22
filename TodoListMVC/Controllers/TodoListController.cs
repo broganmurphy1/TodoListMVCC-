@@ -23,6 +23,7 @@ namespace TodoListMVC.Controllers
             });
         }
 
+        [HttpPost]
         public ActionResult AddNewTodo()
         {
             string todoName = Request["todoName"]; //would need some sort of mechanism/validation here against vulnerabilities
@@ -36,6 +37,22 @@ namespace TodoListMVC.Controllers
             }
 
             return Json(new { success = true, todoName = addedTodo.ItemName, itemId = addedTodo.ItemId });
+        }
+
+        [HttpPost]
+        public ActionResult AddNewSubtask(string todoId)
+        {
+            string subtaskName = Request["subtaskName"]; //would need some sort of mechanism/validation here against vulnerabilities
+
+            TodoItemSubTask newSubtask = new TodoItemSubTask(Guid.NewGuid().ToString(), todoId, subtaskName);
+
+            var addedSubtask = _todoListRepository.AddNewSubtask(newSubtask);
+            if (addedSubtask == null)
+            {
+                return Json(new { success = false });
+            }
+
+            return Json(new { success = true, subtaskName = addedSubtask.SubTaskName, subtaskId = addedSubtask.SubTaskId });
         }
     }
 }

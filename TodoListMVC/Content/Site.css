@@ -40,7 +40,7 @@ li {
     position: relative;
 }
 
-.todolist_field {
+.todolist-field {
     font-size: 14px;
     display: block;
     min-width: 75%;
@@ -50,12 +50,12 @@ li {
     border-bottom: 1px solid var(--input-border-colour);
 }
 
-    .todolist_field:focus {
+    .todolist-field:focus {
         outline: none;
         border-bottom: 2px solid var(--accent-colour);
     }
 
-.todolist_label {
+.todolist-label {
     color: var(--input-label-colour);
     font-size: 14px;
     font-weight: normal;
@@ -67,7 +67,7 @@ li {
     -webkit-transition: 0.2s ease all;
 }
 
-.todolist_field:focus ~ .todolist_label, .todolist_field:not(:placeholder-shown) ~ .todolist_label {
+.todolist-field:focus ~ .todolist-label, .todolist-field:not(:placeholder-shown) ~ .todolist-label {
     top: -18px;
     font-size: 14px;
     color: var(--input-label-colour--focus);
@@ -103,6 +103,7 @@ li {
 
 .todolist-item {
     display: flex;
+    position: relative;
     padding: 2rem;
     gap: 1rem;
     align-items: center;
@@ -166,7 +167,7 @@ i[data-action="edit-todo-submit"], i[data-action="edit-todo-subtask-submit"] {
         gap: 2rem;
     }
 
-    .todolist_field {
+    .todolist-field {
         min-width: 100%;
     }
 }

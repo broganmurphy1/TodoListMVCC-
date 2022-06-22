@@ -11,5 +11,6 @@ namespace TodoListMVC.Repositories
     {
         List<TodoItem> GetAllTodoItems();
         TodoItem AddNewTodo(TodoItem todoItem);
+        TodoItemSubTask AddNewSubtask(TodoItemSubTask subtask);
     }
 }

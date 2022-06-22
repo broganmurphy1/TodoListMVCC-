@@ -5,11 +5,21 @@
         ValidateAndSubmitTodo(event);
     });
 
+    const addSubtaskButtons = [...document.querySelectorAll("[data-button-action='add-subtask']")];
+    console.log(addSubtaskButtons);
+    addSubtaskButtons.forEach(button => {
+        button.addEventListener("click", ({ target }) => {
+            const todoId = target.closest('div.todolist-item').getAttribute('data-todo-id');
+            ValidateAndSubmitSubtask(target, todoId);
+        });
+    });
+
     const todoEditName = [...document.querySelectorAll("[data-action='edit-todo']")];
 
     todoEditName.forEach(todoEdit => {
         todoEdit.addEventListener("click", ({ target }) => {
-            EditableTitle(target);
+            const todoId = target.closest('div.todolist-item').getAttribute('data-todo-id');
+            EditableTitle(target, todoId);
         });
     });
 
@@ -17,7 +27,8 @@
 
     todoEditSubtaskName.forEach(todoSubtaskEdit => {
         todoSubtaskEdit.addEventListener("click", ({ target }) => {
-            EditableSubtask(target);
+            const todoId = target.closest('div.todolist-item').getAttribute('data-todo-id');
+            EditableSubtask(target, todoId);
         });
     });
 
@@ -25,7 +36,8 @@
 
     todoTitles.forEach(title => {
         title.addEventListener('focusout', ({ target: title }) => {
-            FocusOutTitle(title);
+            const todoId = title.closest('div.todolist-item').getAttribute('data-todo-id');
+            FocusOutTitle(title, todoId);
         });
     });
 
@@ -33,27 +45,25 @@
 
     todoSubitles.forEach(title => {
         title.addEventListener('focusout', ({ target: title }) => {
-            FocusOutSubtitle(title);
+            const todoId = title.closest('div.todolist-item').getAttribute('data-todo-id');
+            FocusOutSubtask(title, todoId);
         });
     });
 
     const todoEditSubmit = [...document.querySelectorAll("[data-action='edit-todo-submit']")];
 
     todoEditSubmit.forEach(todoeditsubmit => {
-        todoeditsubmit.addEventListener('click', event => {
-            const newTodoName = document.querySelector('h2.todolist-item__title').textContent;
-
-            SubmitTodoEdit(newTodoName);
+        todoeditsubmit.addEventListener('click', ({ target }) => {
+            SubmitTodoNameEdit(target.closest('div.todolist-item').getAttribute('data-todo-id'));
         });
     });
-
-    const addNewSubtaskFields = [...document.querySelectorAll("[data-field-action='add-new-subtask']")]
 };
 
-const EditableTitle = (target) => {
-    const title = document.querySelector('h2.todolist-item__title');
-    const submit = document.querySelector('i[data-action="edit-todo-submit"]');
-    const details = document.querySelector('details')
+const EditableTitle = (target, todoId) => {
+    const container = target.closest(`div[data-todo-id="${todoId}"]`);
+    const title = container.querySelector('h2.todolist-item__title');
+    const submit = container.querySelector('i[data-action="edit-todo-submit"]');
+    const details = container.querySelector('details')
     target.hidden = true;
     submit.hidden = false;
 
@@ -63,9 +73,10 @@ const EditableTitle = (target) => {
     title.focus();
 }
 
-const EditableSubtask = (target) => {
-    const title = document.querySelector('p.todolist-item__label');
-    const submit = document.querySelector('i[data-action="edit-todo-subtask-submit"]');
+const EditableSubtask = (target, todoId, subtaskId) => {
+    const container = target.closest(`div[data-todo-id="${todoId}"]`);
+    const title = container.querySelector(`div[data-subtask-id="${subtaskId}"] > p.todolist-item__label`);
+    const submit = container.querySelector(`div[data-subtask-id="${subtaskId}"] > i[data-action="edit-todo-subtask-submit"]`);
     target.hidden = true;
     submit.hidden = false;
 
@@ -74,9 +85,11 @@ const EditableSubtask = (target) => {
     title.focus();
 }
 
-const FocusOutTitle = (title) => {
-    const edit = document.querySelector('i[data-action="edit-todo"]');
-    const submit = document.querySelector('i[data-action="edit-todo-submit"]');
+//could refactor below two methods into one, possibly by
+const FocusOutTitle = (title, todoId) => {
+    const container = document.querySelector(`div[data-todo-id="${todoId}"]`);
+    const edit = container.querySelector('i[data-action="edit-todo"]');
+    const submit = container.querySelector('i[data-action="edit-todo-submit"]');
 
     title.setAttribute("contenteditable", false);
     title.closest('details').style.pointerEvents = 'auto';
@@ -86,9 +99,10 @@ const FocusOutTitle = (title) => {
     submit.hidden = true;
 }
 
-const FocusOutSubtitle = (title) => {
-    const edit = document.querySelector('i[data-action="edit-todo-subtask"]');
-    const submit = document.querySelector('i[data-action="edit-todo-subtask-submit"]');
+const FocusOutSubtask = (title, todoId, subtaskId) => {
+    const container = document.querySelector(`div[data-todo-id="${todoId}"]`);
+    const edit = container.querySelector(`div[data-subtask-id="${subtaskId}"] > i[data-action="edit-todo-subtask"]`);
+    const submit = container.querySelector(`div[data-subtask-id="${subtaskId}"] > i[data-action="edit-todo-subtask-submit"]`);
 
     title.setAttribute("contenteditable", false);
     title.closest('details').style.pointerEvents = 'auto';
@@ -96,6 +110,13 @@ const FocusOutSubtitle = (title) => {
 
     edit.hidden = false;
     submit.hidden = true;
+}
+
+const SubmitTodoNameEdit = (todoId) => {
+    const container = document.querySelector(`div[data-todo-id="${todoId}"]`);
+    const newTodoName = container.querySelector('h2.todolist-item__title').textContent;
+
+    SubmitTodoEdit(newTodoName);
 }
 
 const ValidateAndSubmitTodo = (event) => {
@@ -110,7 +131,20 @@ const ValidateAndSubmitTodo = (event) => {
     }
 }
 
-const SubmitNewTodo = async (todoName) => {
+const ValidateAndSubmitSubtask = (target, todoId) => {
+    const todoContainer = target.closest(`div[data-todo-id="${todoId}"]`);
+
+    const value = todoContainer.querySelector('input.todolist-field').value;
+
+    if (!value) {
+        alert("Please enter a subtask name");
+        return;
+    }
+
+    SubmitNewSubtask(todoId, value);
+}
+
+const SubmitNewTodo = (todoName) => {
     //api calls should be extracted into reusable service
     $.ajax({
         type: "POST",
@@ -125,6 +159,46 @@ const SubmitNewTodo = async (todoName) => {
             }
         },
         error: function (data) {
+            console.log(data);
+            alert("Something went wrong, please try again.");
+        }
+    });
+}
+
+const SubmitNewSubtask = (todoId, subtaskName) => {
+
+    $.ajax({
+        type: "POST",
+        url: `todolist/addnewsubtask/${todoId}`,
+        data: {
+            todoId: todoId,
+            subtaskName: subtaskName
+        },
+        success: function (response) {
+            if (response.success) {
+                alert(response.subtaskName);
+                alert(response.subtaskId);
+
+                const subtask = buildNewSubtask(response.subtaskName, response.subtaskId);
+
+                const currentSubtasks = [...document.querySelectorAll(`div[data-todo-id="${todoId}"] .todolist-item__subtask`)];
+                const updatedSubtasks = [...currentSubtasks, subtask];
+
+                //clear current tasks to add updated tasks
+                currentSubtasks.forEach(subtask => {
+                    subtask.remove();
+                });
+
+                const subtasksContainer = document.querySelector(`div[data-todo-id="${todoId}"] .todolist-item__subtasks`)
+                const subtasksContainerFirstChild = subtasksContainer.firstChild;
+
+                updatedSubtasks.forEach(subtask => {
+                    subtasksContainer.insertBefore(subtask, subtasksContainerFirstChild)
+                });
+            }
+        },
+        error: function (data) {
+            console.log(data);
             alert("Something went wrong, please try again.");
         }
     });
@@ -134,17 +208,70 @@ const SubmitTodoEdit = (todoName) => {
     //call to endpoint here
 }
 
+const buildNewSubtask = (subtaskName, subtaskId) => {
+    const container = document.createElement('div');
+    container.setAttribute('data-subtask-id', subtaskId);
+    container.classList.add('todolist-item__subtask');
+
+    const subtaskCheckbox = document.createElement('input');
+    subtaskCheckbox.setAttribute("data-field-action", "add-new-subtask");
+    subtaskCheckbox.setAttribute("type", "checkbox");
+    subtaskCheckbox.classList.add('todolist-item__checkbox', 'm-0');
+    container.appendChild(subtaskCheckbox);
+
+    const subtaskNameParagraph = document.createElement('p');
+    subtaskNameParagraph.classList.add('todolist-item__label', 'm-0', 'cursor-pointer');
+    subtaskNameParagraph.textContent = subtaskName;
+    subtaskNameParagraph.addEventListener('focusout', ({ target }) => {
+        const todoId = target.closest('div.todolist-item').getAttribute('data-todo-id');
+        FocusOutSubtask(target, todoId);
+    });
+    container.appendChild(subtaskNameParagraph);
+
+    const editSubtaskName = document.createElement('i');
+    editSubtaskName.setAttribute('data-action', 'edit-todo-subtask');
+    editSubtaskName.classList.add('fa-solid', 'fa-pen', 'cursor-pointer', 'mr-auto');
+    editSubtaskName.addEventListener('click', ({ target }) => {
+        const todoId = target.closest('div.todolist-item').getAttribute('data-todo-id');
+        EditableSubtask(target, todoId, subtaskId);
+    });
+    container.appendChild(editSubtaskName);
+
+    const editSubtaskNameSubmit = document.createElement('i');
+    editSubtaskNameSubmit.setAttribute('data-action', 'edit-todo-subtask-submit');
+    editSubtaskNameSubmit.classList.add('fa-solid', 'fa-check');
+    editSubtaskNameSubmit.hidden = 'true';
+    container.appendChild(editSubtaskNameSubmit);
+
+    return container;
+}
+
 const buildNewTodo = (todoName, todoId) => {
-    //TODO: add edit title and subtask event handlers here
     //this is where a component re-render upon state change comes in handy :(
     const container = document.createElement('div');
     container.setAttribute('data-todo-id', todoId);
     container.classList.add('todolist-item');
 
-    const editIcon = document.createElement('i');
-
     const detailsElement = document.createElement('details');
+
+    const editIcon = document.createElement('i');
+    editIcon.classList.add('fa-solid', 'fa-pen', 'cursor-pointer', 'mr-auto');
+    editIcon.setAttribute('data-action', 'edit-todo');
+    editIcon.addEventListener("click", ({ target }) => {
+        EditableTitle(target, container.getAttribute('data-todo-id'));
+    });
+
+    const editIconSubmit = document.createElement('i');
+    editIconSubmit.hidden = true;
+    editIconSubmit.classList.add('fa-solid', 'fa-check');
+    editIconSubmit.setAttribute('data-action', 'edit-todo-submit');
+    editIconSubmit.addEventListener("click", ({ target }) => {
+        SubmitTodoNameEdit(container.getAttribute('data-todo-id'));
+    });
+
     container.appendChild(detailsElement);
+    container.appendChild(editIcon);
+    container.appendChild(editIconSubmit);
 
     const summaryElement = document.createElement('summary');
 
@@ -154,6 +281,9 @@ const buildNewTodo = (todoName, todoId) => {
     const title = document.createElement('h2');
     title.classList.add('todolist-item__title', 'm-0');
     title.textContent = todoName;
+    title.addEventListener('focusout', ({ target: title }) => {
+        FocusOutTitle(title, container.getAttribute('data-todo-id'));
+    });
 
     todoListItemInfo.appendChild(title);
 
@@ -169,12 +299,12 @@ const buildNewTodo = (todoName, todoId) => {
     newSubtaskInputContainer.classList.add('todolist__form-label-group', 'mr-4');
 
     const subtaskInput = document.createElement('input');
-    subtaskInput.classList.add('todolist_field');
+    subtaskInput.classList.add('todolist-field');
     subtaskInput.setAttribute('type', 'text');
     subtaskInput.setAttribute('placeholder', ' ');
 
     const subtaskLabel = document.createElement('label');
-    subtaskLabel.classList.add('todolist_label');
+    subtaskLabel.classList.add('todolist-label');
     subtaskLabel.textContent = 'Add subtask';
 
     newSubtaskInputContainer.appendChild(subtaskInput);

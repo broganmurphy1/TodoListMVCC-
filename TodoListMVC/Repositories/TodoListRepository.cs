@@ -36,6 +36,24 @@ namespace TodoListMVC.Repositories
             return todoItem;
         }
 
+        public TodoItemSubTask AddNewSubtask(TodoItemSubTask subtask)
+        {
+            try
+            {
+                if(subtask != null)
+                {
+                    TodoItem todo = todoItems.Find(item => item.ItemId == subtask.ItemId);
+                }
+            }
+            catch (Exception ex)
+            {
+                //Log exception here for investigation using logging mechanism
+                Console.WriteLine(ex);
+                return null;
+            }
+            return subtask;
+        }
+
         private void seedList()
         {
             List<TodoItemSubTask> subTasks = new List<TodoItemSubTask>();

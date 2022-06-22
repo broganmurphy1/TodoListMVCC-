@@ -8,42 +8,43 @@
 
 <section class="todolist_add-item">
     <div class="todolist__form-label-group">
-        <input data-field-action="add-new-todo" class="todolist_field" type="text" placeholder=" ">
-        <label class="todolist_label">Add new item</label>
+        <input data-field-action="add-new-todo" class="todolist-field" type="text" placeholder=" ">
+        <label class="todolist-label">Add new item</label>
     </div>
 </section>
 <section class="todolist-items">
     @foreach (var todo in Model.Todos)
     {
-        <div data-todo-id="@todo.ItemId" class="todolist-item">
-            <details>
-                <summary class="d-flex">
-                    <div class="todolist-item__info">
-                        <h2 class="todolist-item__title m-0 @(todo.IsComplete ? "text-decoration--line-through" : "")">@todo.ItemName</h2>
-                    </div>
-                </summary>
-                <div class="todolist-item__subtasks">
-                    @foreach (var subtask in todo.Subtasks)
-                    {
+    <div data-todo-id="@todo.ItemId" class="todolist-item">
+        <details>
+            <summary class="d-flex">
+                <div class="todolist-item__info">
+                    <h2 class="todolist-item__title m-0 @(todo.IsComplete ? "text-decoration--line-through" : "")">@todo.ItemName</h2>
+                </div>
+            </summary>
+            <div class="todolist-item__subtasks">
+                @foreach (var subtask in todo.Subtasks)
+                {
                     <div data-subtask-id="@subtask.SubTaskId" class="todolist-item__subtask">
                         <input data-field-action="add-new-subtask" type="checkbox" class="todolist-item__checkbox m-0" @(subtask.IsSubTaskComplete ? "checked" : "") />
                         <p class="todolist-item__label m-0 cursor-pointer">@subtask.SubTaskName</p>
                         <i data-action="edit-todo-subtask" class="fa-solid fa-pen cursor-pointer mr-auto"></i>
                         <i data-action="edit-todo-subtask-submit" class="fa-solid fa-check" hidden></i>
                     </div>
-                    }
-                    <div class="d-flex flex-row">
-                        <div class="todolist__form-label-group mr-4">
-                            <input class="todolist_field" type="text" placeholder=" ">
-                            <label class="todolist_label">Add subtask</label>
-                        </div>
-                        <button class="todolist_add-button">Add</button>
+                }
+                <div class="d-flex flex-row">
+                    <div class="todolist__form-label-group mr-4">
+                        <input class="todolist-field" type="text" placeholder=" ">
+                        <label class="todolist-label">Add subtask</label>
                     </div>
+                    <button data-button-action="add-subtask" class="todolist_add-button">Add</button>
                 </div>
-            </details>
-            <i data-action="edit-todo" class="fa-solid fa-pen cursor-pointer mr-auto"></i>
-            <i data-action="edit-todo-submit" class="fa-solid fa-check" hidden></i>
-        </div>
+            </div>
+        </details>
+        <i data-action="edit-todo" class="fa-solid fa-pen cursor-pointer mr-auto"></i>
+        <i data-action="edit-todo-submit" class="fa-solid fa-check" hidden></i>
+        <i class="fa-solid fa-circle-xmark todolist-item__delete"></i>
+    </div>
     }
 </section>
 <script>
